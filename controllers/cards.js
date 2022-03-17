@@ -14,9 +14,9 @@ const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
 
-    await Cards.create({ name, link, owner: req.user._id });
+    const card = await Cards.create({ name, link, owner: req.user._id });
 
-    return res.sendStatus(200);
+    return res.send(card);
   } catch (error) {
     return next(error);
   }
@@ -30,9 +30,9 @@ const deleteCard = async (req, res, next) => {
       return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
     }
 
-    await Cards.findByIdAndRemove(req.params.id);
+    const data = await Cards.findByIdAndRemove(req.params.id);
 
-    return res.sendStatus(200);
+    return res.send(data);
   } catch (error) {
     return next(error);
   }
@@ -46,13 +46,13 @@ const addLike = async (req, res, next) => {
       return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
     }
 
-    await Cards.findByIdAndUpdate(
+    const data = await Cards.findByIdAndUpdate(
       req.params.id,
       { $addToSet: { likes: req.user._id } },
       { new: true },
     );
 
-    return res.sendStatus(200);
+    return res.send(data);
   } catch (error) {
     return next(error);
   }
@@ -66,13 +66,13 @@ const deleteLike = async (req, res, next) => {
       return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
     }
 
-    await Cards.findByIdAndUpdate(
+    const data = await Cards.findByIdAndUpdate(
       req.params.id,
       { $pull: { likes: req.user._id } },
       { new: true },
     );
 
-    return res.sendStatus(200);
+    return res.send(data);
   } catch (error) {
     return next(error);
   }

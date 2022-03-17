@@ -27,9 +27,17 @@ app.use((req, _res, next) => {
 app.use(usersRouter);
 app.use(cardsRouter);
 
+app.use((req, res) => {
+  res.status(404).send({ message: 'Не найдено' });
+});
+
 app.use((error, _req, res, _next) => {
   if (error.name === 'ValidationError') {
     return res.status(400).send({ message: 'Некорректные данные' });
+  }
+
+  if (error.name === 'CastError') {
+    return res.status(400).send({ message: 'Невалидный id' });
   }
 
   return res.status(500).send({ message: 'Что-то пошло не так' });

@@ -1,7 +1,7 @@
 {
   "name": "express-mesto-gha",
   "version": "1.0.0",
-  "description": "[![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml)\r # Проект Mesto фронтенд + бэкенд",
+  "description": "https://github.com/pinakoladda/express-mesto-gha",
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint .",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yandex-praktikum/express-mesto-gha.git"
+    "url": "https://github.com/pinakoladda/express-mesto-gha"
   },
-  "author": "",
+  "author": "https://github.com/pinakoladda",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yandex-praktikum/express-mesto-gha/issues"
+    "url": "https://github.com/pinakoladda/express-mesto-gha/issues"
   },
-  "homepage": "https://github.com/yandex-praktikum/express-mesto-gha#readme",
+  "homepage": "https://github.com/pinakoladda/express-mesto-gha#readme",
   "devDependencies": {
     "eslint": "^8.11.0",
     "eslint-config-airbnb-base": "^15.0.0",
