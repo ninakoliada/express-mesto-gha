@@ -1,6 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const AuthError = require('../errors/auth-error');
+const DuplicateError = require('../errors/duplicate-error');
+const NotFoundError = require('../errors/not-found-error');
+
 const Users = require('../models/user');
 
 const getUsers = async (req, res, next) => {
@@ -18,7 +22,7 @@ const getUser = async (req, res, next) => {
     const user = await Users.findById(req.params.id);
 
     if (!user) {
-      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+      return next(new NotFoundError('Запрашиваемый пользователь не найден'));
     }
 
     return res.send(user);
@@ -32,7 +36,7 @@ const getCurrentUser = async (req, res, next) => {
     const user = await Users.findById(req.user._id);
 
     if (!user) {
-      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+      return next(new NotFoundError('Запрашиваемый пользователь не найден'));
     }
 
     return res.send(user);
@@ -62,6 +66,10 @@ const createUser = async (req, res, next) => {
 
     return res.send(user);
   } catch (error) {
+    if (error.code === 11000) {
+      return next(new DuplicateError('Такой email уже зарегистрирован'));
+    }
+
     return next(error);
   }
 };
@@ -77,7 +85,7 @@ const updateUser = async (req, res, next) => {
     );
 
     if (!user) {
-      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+      return next(new NotFoundError('Запрашиваемый пользователь не найден'));
     }
 
     return res.send(user);
@@ -97,7 +105,7 @@ const updateUserAvatar = async (req, res, next) => {
     );
 
     if (!user) {
-      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+      return next(new NotFoundError('Запрашиваемый пользователь не найден'));
     }
 
     return res.send(user);
@@ -106,19 +114,19 @@ const updateUserAvatar = async (req, res, next) => {
   }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await Users.findOne({ email }).select('+password');
 
   if (!user) {
-    return res.status(401).send({ message: 'Неправильные почта или пароль' });
+    return next(AuthError('Неправильные почта или пароль'));
   }
 
   const matched = await bcrypt.compare(password, user.password);
 
   if (!matched) {
-    return res.status(401).send({ message: 'Неправильные почта или пароль' });
+    return next(AuthError('Неправильные почта или пароль'));
   }
 
   const token = jwt.sign({ _id: user._id }, 'some-secret-key');

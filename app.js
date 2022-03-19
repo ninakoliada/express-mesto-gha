@@ -10,6 +10,7 @@ const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 
 const auth = require('./middlewares/auth');
+const { createUserValidator, loginValidator } = require('./validators/userValidator');
 
 const { PORT = 3000 } = process.env;
 
@@ -23,8 +24,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', loginValidator, login);
+app.post('/signup', createUserValidator, createUser);
 
 app.use(auth);
 
@@ -38,8 +39,6 @@ app.use((req, res) => {
 app.use(errors());
 
 app.use((error, _req, res, _next) => {
-  console.log(error);
-
   if (error.name === 'ValidationError') {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
@@ -48,7 +47,7 @@ app.use((error, _req, res, _next) => {
     return res.status(400).send({ message: 'Невалидный id' });
   }
 
-  return res.status(500).send({ message: 'Что-то пошло не так' });
+  return res.status(error.statusCode || 500).send({ message: error.message || 'Что-то пошло не так' });
 });
 
 app.listen(PORT, () => {

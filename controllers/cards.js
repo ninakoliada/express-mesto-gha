@@ -1,5 +1,8 @@
 const Cards = require('../models/card');
 
+const ForbiddenError = require('../errors/forbidden-error');
+const NotFoundError = require('../errors/not-found-error');
+
 const getCards = async (req, res, next) => {
   try {
     const data = await Cards.find({});
@@ -27,11 +30,11 @@ const deleteCard = async (req, res, next) => {
     const card = await Cards.findOne({ _id: req.params.id });
 
     if (!card) {
-      return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+      return next(new NotFoundError('Запрашиваемая карточка не найдена'));
     }
 
     if (String(card.owner) !== req.user._id) {
-      return res.status(403).send({ message: 'Нет прав на удаление этой карточки' });
+      return next(new ForbiddenError('Нет прав на удаление этой карточки'));
     }
 
     await card.remove();
@@ -50,7 +53,7 @@ const addLike = async (req, res, next) => {
     );
 
     if (!card) {
-      return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+      return next(new NotFoundError('Запрашиваемая карточка не найдена'));
     }
 
     return res.send(card);
@@ -68,7 +71,7 @@ const deleteLike = async (req, res, next) => {
     );
 
     if (!card) {
-      return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+      return next(new NotFoundError('Запрашиваемая карточка не найдена'));
     }
 
     return res.send(card);

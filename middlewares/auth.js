@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const ForbiddenError = require('../errors/forbidden-error');
 
 module.exports = (req, res, next) => {
   const { token } = req.cookies;
@@ -9,6 +10,6 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    res.status(403).send({ message: 'Необходима авторизация' });
+    next(new ForbiddenError('Необходима авторизация'));
   }
 };
