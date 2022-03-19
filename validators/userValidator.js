@@ -1,4 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
+const urlValidator = require('./utils/urlValidator');
 
 const createUserValidator = celebrate({
   body: {
@@ -6,7 +7,7 @@ const createUserValidator = celebrate({
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().uri(),
+    avatar: urlValidator,
   },
 });
 
@@ -19,7 +20,7 @@ const loginValidator = celebrate({
 
 const getUserValidator = celebrate({
   params: {
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().hex().length(24),
   },
 });
 
@@ -32,7 +33,7 @@ const updateUserValidator = celebrate({
 
 const updateUserAvatarValidator = celebrate({
   body: {
-    avatar: Joi.string().uri(),
+    avatar: urlValidator,
   },
 });
 

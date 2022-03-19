@@ -64,6 +64,8 @@ const createUser = async (req, res, next) => {
       password: passwordHash,
     });
 
+    delete user.password;
+
     return res.send(user);
   } catch (error) {
     if (error.code === 11000) {
@@ -131,7 +133,7 @@ const login = async (req, res, next) => {
 
   const token = jwt.sign({ _id: user._id }, 'some-secret-key');
 
-  return res.cookie('token', token, { maxAge: 60 * 60 * 60 * 24, httpOnly: true }).sendStatus(200);
+  return res.cookie('token', token, { maxAge: 60 * 60 * 60 * 24, httpOnly: true }).send({ message: 'Успешно' });
 };
 
 module.exports = {

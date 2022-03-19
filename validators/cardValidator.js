@@ -1,15 +1,16 @@
 const { celebrate, Joi } = require('celebrate');
+const urlValidator = require('./utils/urlValidator');
 
 const createCardValidator = celebrate({
   body: {
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().uri(),
+    link: urlValidator,
   },
 });
 
 const cardIdValidator = celebrate({
   params: {
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().hex().length(24),
   },
 });
 

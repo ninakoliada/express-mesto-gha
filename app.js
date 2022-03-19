@@ -11,6 +11,8 @@ const { login, createUser } = require('./controllers/users');
 
 const auth = require('./middlewares/auth');
 const { createUserValidator, loginValidator } = require('./validators/userValidator');
+const NotFoundError = require('./errors/not-found-error');
+const BadRequestError = require('./errors/bad-request-error');
 
 const { PORT = 3000 } = process.env;
 
@@ -32,22 +34,28 @@ app.use(auth);
 app.use(usersRouter);
 app.use(cardsRouter);
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Не найдено' });
+app.use((req, res, next) => {
+  next(new NotFoundError('Не найдено'));
 });
 
 app.use(errors());
 
-app.use((error, _req, res, _next) => {
+app.use((error, req, res, next) => {
   if (error.name === 'ValidationError') {
-    return res.status(400).send({ message: 'Некорректные данные' });
+    return next(new BadRequestError('Некорректные данные'));
   }
 
   if (error.name === 'CastError') {
-    return res.status(400).send({ message: 'Невалидный id' });
+    return next(new BadRequestError('Невалидный id'));
   }
 
-  return res.status(error.statusCode || 500).send({ message: error.message || 'Что-то пошло не так' });
+  return next(error);
+});
+
+app.use((error, req, res, _next) => {
+  const { statusCode = 500, message = 'Что-то пошло не так' } = error;
+
+  return res.status(statusCode).send({ message });
 });
 
 app.listen(PORT, () => {

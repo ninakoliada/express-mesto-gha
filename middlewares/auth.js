@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const ForbiddenError = require('../errors/forbidden-error');
+const AuthError = require('../errors/auth-error');
 
 module.exports = (req, res, next) => {
   const { token } = req.cookies;
@@ -10,6 +10,6 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    next(new ForbiddenError('Необходима авторизация'));
+    next(new AuthError('Необходима авторизация'));
   }
 };
