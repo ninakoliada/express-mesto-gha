@@ -27,6 +27,20 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const user = await Users.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+    }
+
+    return res.send(user);
+  } catch (error) {
+    return next(error);
+  }
+};
+
 const createUser = async (req, res, next) => {
   try {
     const {
@@ -95,7 +109,7 @@ const updateUserAvatar = async (req, res, next) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await Users.findOne({ email });
+  const user = await Users.findOne({ email }).select('+password');
 
   if (!user) {
     return res.status(401).send({ message: 'Неправильные почта или пароль' });
@@ -109,7 +123,7 @@ const login = async (req, res) => {
 
   const token = jwt.sign({ _id: user._id }, 'some-secret-key');
 
-  return res.cookie('token', token, { maxAge: 60 * 60 * 24, httpOnly: true }).sendStatus(200);
+  return res.cookie('token', token, { maxAge: 60 * 60 * 60 * 24, httpOnly: true }).sendStatus(200);
 };
 
 module.exports = {
@@ -119,4 +133,5 @@ module.exports = {
   updateUser,
   updateUserAvatar,
   login,
+  getCurrentUser,
 };

@@ -24,12 +24,17 @@ const createCard = async (req, res, next) => {
 
 const deleteCard = async (req, res, next) => {
   try {
-    const card = await Cards.findByIdAndRemove(req.params.id);
+    const card = await Cards.findOne({ _id: req.params.id });
 
     if (!card) {
       return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
     }
 
+    if (String(card.owner) !== req.user._id) {
+      return res.status(403).send({ message: 'Нет прав на удаление этой карточки' });
+    }
+
+    await card.remove();
     return res.send(card);
   } catch (error) {
     return next(error);
