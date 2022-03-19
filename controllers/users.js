@@ -38,21 +38,19 @@ const createUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    const user = await Users.findById(req.user._id);
-
-    if (!user) {
-      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
-    }
-
     const { name, about } = req.body;
 
-    const data = await Users.findByIdAndUpdate(
+    const user = await Users.findByIdAndUpdate(
       req.user._id,
       { name, about },
       { new: true, runValidators: true },
     );
 
-    return res.send(data);
+    if (!user) {
+      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+    }
+
+    return res.send(user);
   } catch (error) {
     return next(error);
   }
@@ -60,21 +58,19 @@ const updateUser = async (req, res, next) => {
 
 const updateUserAvatar = async (req, res, next) => {
   try {
-    const user = await Users.findById(req.user._id);
-
-    if (!user) {
-      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
-    }
-
     const { avatar } = req.body;
 
-    const data = await Users.findByIdAndUpdate(
+    const user = await Users.findByIdAndUpdate(
       req.user._id,
       { avatar },
       { new: true, runValidators: true },
     );
 
-    return res.send(data);
+    if (!user) {
+      return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+    }
+
+    return res.send(user);
   } catch (error) {
     return next(error);
   }

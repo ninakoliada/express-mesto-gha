@@ -24,15 +24,13 @@ const createCard = async (req, res, next) => {
 
 const deleteCard = async (req, res, next) => {
   try {
-    const card = await Cards.findById(req.params.id);
+    const card = await Cards.findByIdAndRemove(req.params.id);
 
     if (!card) {
       return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
     }
 
-    const data = await Cards.findByIdAndRemove(req.params.id);
-
-    return res.send(data);
+    return res.send(card);
   } catch (error) {
     return next(error);
   }
@@ -40,19 +38,17 @@ const deleteCard = async (req, res, next) => {
 
 const addLike = async (req, res, next) => {
   try {
-    const card = await Cards.findById(req.params.id);
-
-    if (!card) {
-      return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
-    }
-
-    const data = await Cards.findByIdAndUpdate(
+    const card = await Cards.findByIdAndUpdate(
       req.params.id,
       { $addToSet: { likes: req.user._id } },
       { new: true },
     );
 
-    return res.send(data);
+    if (!card) {
+      return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+    }
+
+    return res.send(card);
   } catch (error) {
     return next(error);
   }
@@ -60,19 +56,17 @@ const addLike = async (req, res, next) => {
 
 const deleteLike = async (req, res, next) => {
   try {
-    const card = await Cards.findById(req.params.id);
-
-    if (!card) {
-      return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
-    }
-
-    const data = await Cards.findByIdAndUpdate(
+    const card = await Cards.findByIdAndUpdate(
       req.params.id,
       { $pull: { likes: req.user._id } },
       { new: true },
     );
 
-    return res.send(data);
+    if (!card) {
+      return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+    }
+
+    return res.send(card);
   } catch (error) {
     return next(error);
   }
