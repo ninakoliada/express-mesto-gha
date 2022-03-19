@@ -1,9 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
+const { errors } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+
+const { login, createUser } = require('./controllers/users');
+
+const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 
@@ -15,14 +21,12 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-app.use((req, _res, next) => {
-  req.user = {
-    _id: '62333802d9a0c5f237f36999',
-  };
+app.post('/signin', login);
+app.post('/signup', createUser);
 
-  next();
-});
+app.use(auth);
 
 app.use(usersRouter);
 app.use(cardsRouter);
@@ -31,7 +35,11 @@ app.use((req, res) => {
   res.status(404).send({ message: 'Не найдено' });
 });
 
+app.use(errors());
+
 app.use((error, _req, res, _next) => {
+  console.log(error);
+
   if (error.name === 'ValidationError') {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
