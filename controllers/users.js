@@ -64,7 +64,7 @@ const createUser = async (req, res, next) => {
       password: passwordHash,
     });
 
-    delete user.password;
+    user.password = undefined;
 
     return res.send(user);
   } catch (error) {
