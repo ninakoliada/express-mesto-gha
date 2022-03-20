@@ -122,13 +122,13 @@ const login = async (req, res, next) => {
   const user = await Users.findOne({ email }).select('+password');
 
   if (!user) {
-    return next(AuthError('Неправильные почта или пароль'));
+    return next(new AuthError('Неправильные почта или пароль'));
   }
 
   const matched = await bcrypt.compare(password, user.password);
 
   if (!matched) {
-    return next(AuthError('Неправильные почта или пароль'));
+    return next(new AuthError('Неправильные почта или пароль'));
   }
 
   const token = jwt.sign({ _id: user._id }, 'some-secret-key');
