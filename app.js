@@ -10,9 +10,13 @@ const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 
 const auth = require('./middlewares/auth');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 const { createUserValidator, loginValidator } = require('./validators/userValidator');
+
 const NotFoundError = require('./errors/not-found-error');
 const BadRequestError = require('./errors/bad-request-error');
+
 
 const { PORT = 3000 } = process.env;
 
@@ -26,6 +30,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(requestLogger);
+
 app.post('/signin', loginValidator, login);
 app.post('/signup', createUserValidator, createUser);
 
@@ -37,6 +43,8 @@ app.use(cardsRouter);
 app.use((req, res, next) => {
   next(new NotFoundError('Не найдено'));
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 
