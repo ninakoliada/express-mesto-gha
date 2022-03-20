@@ -1,0 +1,10 @@
+.card__section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 282px;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    padding: 25px 20px 25px 21px;
+    border-radius: 0 0 10px 10px;
+}

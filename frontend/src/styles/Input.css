@@ -1,0 +1,19 @@
+.input {
+    width: 100%;
+    border: none;
+    padding: 0 0 9px;
+    font-size: 14px;
+    line-height: 17px;
+    outline: none;
+    background-color: unset;
+}
+
+.input_theme_white {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+
+.input_theme_dark {
+    border-bottom: 2px solid #CCCCCC;
+    color: #CCCCCC;
+}
