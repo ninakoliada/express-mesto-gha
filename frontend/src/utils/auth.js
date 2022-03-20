@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://auth.nomoreparties.co';
+export const BASE_URL = 'https://api.pinakoladda.nomoredomains.work';
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
@@ -25,6 +25,7 @@ export const authorize = (email, password) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
+    credentials: 'include',
     body: JSON.stringify({ email, password })
   })
   .then((response) => {
@@ -38,14 +39,22 @@ export const authorize = (email, password) => {
   });
 };
 
-export const checkToken = (token) => {
-  return fetch(`${BASE_URL}/users/me`, {
-    method: 'GET',
+export const logout = () => {
+  return fetch(`${BASE_URL}/logout`, {
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    }
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
   })
-  .then(res => res.json())
-}
+  .then((response) => {
+    console.log(response);
+
+    if (!response.ok) {
+      throw new Error('Logout Error');
+    }
+
+    return response.json();
+  });
+};
+

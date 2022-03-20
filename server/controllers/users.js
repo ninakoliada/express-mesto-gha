@@ -7,6 +7,8 @@ const NotFoundError = require('../errors/not-found-error');
 
 const Users = require('../models/user');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const getUsers = async (req, res, next) => {
   try {
     const data = await Users.find({});
@@ -131,10 +133,23 @@ const login = async (req, res, next) => {
     return next(new AuthError('Неправильные почта или пароль'));
   }
 
-  const token = jwt.sign({ _id: user._id }, 'some-secret-key');
+  const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
 
-  return res.cookie('token', token, { maxAge: 60 * 60 * 60 * 24, httpOnly: true }).send({ message: 'Успешно' });
+  return res
+    .cookie('token', token, {
+      maxAge: 60 * 60 * 60 * 24,
+      httpOnly: true,
+      sameSite: 'None',
+      secure: true,
+    })
+    .send({ message: 'Успешно' });
 };
+
+const logout = (req, res) => res.clearCookie('token', {
+  httpOnly: true,
+  sameSite: 'None',
+  secure: true,
+}).send({ message: 'Досвидания' });
 
 module.exports = {
   getUsers,
@@ -143,5 +158,6 @@ module.exports = {
   updateUser,
   updateUserAvatar,
   login,
+  logout,
   getCurrentUser,
 };

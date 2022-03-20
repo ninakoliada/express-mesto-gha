@@ -29,40 +29,34 @@ const App = () => {
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    if (localStorage.getItem('jwt')) {
-      const jwt = localStorage.getItem('jwt');
+    api.getUserInfo()
+      .then((data) => {
+        setLoggedIn(true);
+        setCurrentUser(data);
+        setEmail(data.email);
 
-      auth.checkToken(jwt)
-        .then((res) => {
-          if (res) {
-            setLoggedIn(true);
-            setEmail(res.data.email);
-
-            if (history.location.pathname !== '/') {
-              history.push('/')
-            }
-          } else {
-            setLoggedIn(false);
-            setEmail('');
-            history.push('/sign-in')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        });
-    }
-  }, [loggedIn, history]);
+        if (history.location.pathname !== '/') {
+          history.push('/');
+        }
+      })
+      .catch(() => {
+        setLoggedIn(false);
+        setEmail('');
+        history.push('/sign-in')
+      })
+  }, [loggedIn, history])
 
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cardsData]) => {
-        setCurrentUser(userData);
-        setCards(cardsData);
-      })
+    if (!loggedIn) {
+      return;
+    }
+
+    api.getInitialCards()
+      .then(setCards)
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [loggedIn]);
 
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
@@ -154,13 +148,9 @@ const App = () => {
 
   function handleLogin(email, password) {
       auth.authorize(email, password)
-        .then((res) => {
-            if (res.token) {
-                setLoggedIn(true);
-                localStorage.setItem('jwt', res.token);
-
-                history.push('/');
-            }
+        .then(() => {
+          setLoggedIn(true);
+          history.push('/');
         })
         .catch((err) => {
             onError();
@@ -169,8 +159,14 @@ const App = () => {
   }
 
   function handleLogout() {
-    localStorage.removeItem('jwt');
-    setLoggedIn(false);
+    auth.logout()
+      .then(() => {
+        setLoggedIn(false);
+      })
+      .catch((err) => {
+        onError();
+        console.log(err);
+      })
   }
 
   function onError() {

@@ -1,7 +1,7 @@
 class Api {
-  constructor({baseUrl, headers}) {
+  constructor({baseUrl, params}) {
    this._baseUrl = baseUrl;
-   this._headers = headers;
+   this._params = params
   }
 
   _parseResponse(res) {
@@ -13,15 +13,13 @@ class Api {
   }
 
   getUserInfo() {
-    return fetch(this._baseUrl + '/users/me', {
-      headers: this._headers,
-    }).then(this._parseResponse);
+    return fetch(this._baseUrl + '/users/me', this._params).then(this._parseResponse);
   }
 
   editUserInfo({ name, about }) {
     return fetch(this._baseUrl + '/users/me', {
+      ...this._params,
       method: 'PATCH',
-      headers: this._headers,
       body: JSON.stringify({
         name,
         about
@@ -31,22 +29,20 @@ class Api {
 
   updateAvatar(avatar) {
     return fetch(this._baseUrl + '/users/me/avatar', {
+      ...this._params,
       method: 'PATCH',
-      headers: this._headers,
       body: JSON.stringify({ avatar })
     }).then(this._parseResponse);
   }
 
   getInitialCards() {
-    return fetch(this._baseUrl + '/cards', {
-      headers: this._headers,
-    }).then(this._parseResponse)
+    return fetch(this._baseUrl + '/cards', this._params).then(this._parseResponse)
   }
 
   addCard({ name, link }) {
     return fetch(this._baseUrl + '/cards', {
+      ...this._params,
       method: 'POST',
-      headers: this._headers,
       body: JSON.stringify({
         name,
         link
@@ -56,8 +52,8 @@ class Api {
 
   deleteCard = (cardId) => {
     return fetch(this._baseUrl + '/cards/' + cardId, {
+      ...this._params,
       method: 'DELETE',
-      headers: this._headers,
     }).then(this._parseResponse);
   }
 
@@ -70,24 +66,26 @@ class Api {
   }
   
   addLike = (cardId) => {
-    return fetch(this._baseUrl + '/cards/likes/' + cardId, {
+    return fetch(this._baseUrl + `/cards/${cardId}/likes`, {
+      ...this._params,
       method: 'PUT',
-      headers: this._headers,
     }).then(this._parseResponse);
   }
 
   deleteLike = (cardId) => {
-    return fetch(this._baseUrl + '/cards/likes/' + cardId, {
+    return fetch(this._baseUrl + `/cards/${cardId}/likes`, {
+      ...this._params,
       method: 'DELETE',
-      headers: this._headers,
     }).then(this._parseResponse);
   }
 }
 
 export const api = new Api({
-  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-30",
-  headers: {
-    authorization: "4efaaa97-5e92-49c0-9da5-0bde0e3791b7",
-    "Content-Type": "application/json",
+  baseUrl: "https://api.pinakoladda.nomoredomains.work",
+  params: {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: 'include'
   },
 });

@@ -1,7 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const { errors } = require('celebrate');
 const usersRouter = require('./routes/users');
@@ -17,7 +19,6 @@ const { createUserValidator, loginValidator } = require('./validators/userValida
 const NotFoundError = require('./errors/not-found-error');
 const BadRequestError = require('./errors/bad-request-error');
 
-
 const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -29,16 +30,27 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
 
 app.use(requestLogger);
 
 app.post('/signin', loginValidator, login);
 app.post('/signup', createUserValidator, createUser);
 
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 app.use(auth);
 
 app.use(usersRouter);
 app.use(cardsRouter);
+
 
 app.use((req, res, next) => {
   next(new NotFoundError('Не найдено'));

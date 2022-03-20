@@ -5,7 +5,7 @@ const NotFoundError = require('../errors/not-found-error');
 
 const getCards = async (req, res, next) => {
   try {
-    const data = await Cards.find({});
+    const data = await Cards.find({}).populate('likes owner');
 
     return res.send(data);
   } catch (error) {
@@ -50,7 +50,7 @@ const addLike = async (req, res, next) => {
       req.params.id,
       { $addToSet: { likes: req.user._id } },
       { new: true },
-    );
+    ).populate('likes owner');
 
     if (!card) {
       return next(new NotFoundError('Запрашиваемая карточка не найдена'));
@@ -68,7 +68,7 @@ const deleteLike = async (req, res, next) => {
       req.params.id,
       { $pull: { likes: req.user._id } },
       { new: true },
-    );
+    ).populate('likes owner');
 
     if (!card) {
       return next(new NotFoundError('Запрашиваемая карточка не найдена'));

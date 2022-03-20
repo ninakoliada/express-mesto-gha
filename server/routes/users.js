@@ -6,6 +6,7 @@ const {
   updateUser,
   updateUserAvatar,
   getCurrentUser,
+  logout,
 } = require('../controllers/users');
 
 const {
@@ -19,4 +20,6 @@ router.get('/users/me', getCurrentUser);
 router.get('/users/:id', getUserValidator, getUser);
 router.patch('/users/me', updateUserValidator, updateUser);
 router.patch('/users/me/avatar', updateUserAvatarValidator, updateUserAvatar);
+router.get('/logout', logout);
+
 module.exports = router;
