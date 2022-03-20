@@ -1,0 +1,37 @@
+.register {
+    max-width: 358px;
+    margin: 0 auto;
+}
+
+.register__input {
+    margin-bottom: 30px;
+}
+
+.register__title {
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    margin: 60px 0 50px;
+}
+
+.register__button {
+    margin-top: 216px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+
+.register__link {
+    display: block;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 17px;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.register__link:hover {
+    opacity: 0.6;
+}

@@ -1,0 +1,15 @@
+.card__heart-button {
+    background-image: url('../../../images/Heart.svg');
+    width: 22px;
+    height: 19px;
+    display: inline-block;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+    border: none;
+    background-color: unset;
+}
+
+.card__heart-button:hover {
+    opacity: 0.5;
+}

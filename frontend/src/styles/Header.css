@@ -1,0 +1,36 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header__link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 22px;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.header__link:hover {
+    opacity: 0.6;
+}
+
+.header__email {
+    margin-right: 24px;
+}
+
+.header__logout {
+    font-size: 18px;
+    line-height: 22px;
+    color: #A9A9A9;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 900px) {
+    .header {
+        padding-left: 27px;
+        padding-right: 27px;
+    }
+}
